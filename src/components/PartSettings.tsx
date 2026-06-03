@@ -1,15 +1,18 @@
 import Settings from "./Settings";
-import { Container } from "@mui/material";
+import type { PartState } from "../App";
 
-export default function PartSettings() {
+interface PartSettingsProps {
+  partStates: Array<PartState>;
+}
+
+export default function PartSettings(props: PartSettingsProps) {
   return (
-    <Container>
+    <div>
       <ul>
-        <Settings />
-        <Settings />
-        <Settings />
-        <Settings />
+        {props.partStates.map((part) => (
+          <Settings state={part} key={part.name} />
+        ))}
       </ul>
-    </Container>
+    </div>
   );
 }

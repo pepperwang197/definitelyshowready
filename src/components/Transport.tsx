@@ -1,5 +1,3 @@
-import { Container } from "@mui/material";
-
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 // import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
@@ -17,8 +15,8 @@ interface TransportProps {
 
 export default function Transport(props: TransportProps) {
   return (
-    <Container>
-      <Container className="flex flex-row items-center">
+    <>
+      <div className="flex flex-row items-center">
         {props.playing ? (
           <button onClick={props.pause}>
             <PauseIcon />
@@ -28,12 +26,12 @@ export default function Transport(props: TransportProps) {
             <PlayArrowIcon />
           </button>
         )}
-      </Container>
+      </div>
       <ProgressBar
         duration={props.duration}
         currentTime={props.currentTime}
         move={props.move}
       />
-    </Container>
+    </>
   );
 }
