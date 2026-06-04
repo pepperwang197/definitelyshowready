@@ -62,7 +62,7 @@ export default function App() {
         // change later
         name: name,
         path: data.paths[index],
-        volume: 100,
+        volume: 0.7,
         muted: false,
         soloed: false,
       })),

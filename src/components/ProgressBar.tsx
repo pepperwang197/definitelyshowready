@@ -9,11 +9,12 @@ interface progressBarProps {
 
 export default function ProgressBar(props: progressBarProps) {
   const [position, setPosition] = useState(props.currentTime);
-
-  // console.log(position);
+  const [moving, setMoving] = useState(false);
 
   useEffect(() => {
-    setPosition(props.currentTime);
+    if (!moving) {
+      setPosition(props.currentTime);
+    }
   }, [props.currentTime]);
 
   return (
@@ -21,11 +22,13 @@ export default function ProgressBar(props: progressBarProps) {
       <Slider.Root
         className="group relative flex items-center w-full h-4"
         onValueChange={(value: number[]) => {
-          // console.log(value);
+          if (!moving) {
+            setMoving(true);
+          }
           setPosition(value[0]);
         }}
         onValueCommit={(value: number[]) => {
-          console.log(value);
+          setMoving(false);
           props.move(value[0]);
         }}
         value={[position]}
