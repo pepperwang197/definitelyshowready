@@ -4,4 +4,4 @@ export interface TrackInfo {
   name: string;
 }
 
-export const TrackContext = createContext();
+export const TrackContext = createContext({ name: "myName" });

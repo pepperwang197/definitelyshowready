@@ -19,7 +19,7 @@ export default function ProgressBar(props: progressBarProps) {
   return (
     <>
       <Slider.Root
-        className="group relative flex items-center w-full h-2"
+        className="group relative flex items-center w-full h-4"
         onValueChange={(value: number[]) => {
           // console.log(value);
           setPosition(value[0]);
@@ -32,11 +32,11 @@ export default function ProgressBar(props: progressBarProps) {
         max={props.duration}
         step={1}
       >
-        <Slider.Track className="relative grow size-full overflow-hidden rounded-full bg-black">
-          <Slider.Range className="absolute grow h-full bg-gray-400" />
+        <Slider.Track className="relative grow size-full overflow-hidden rounded-full bg-slate-300">
+          <Slider.Range className="absolute grow h-full bg-cyan-500" />
         </Slider.Track>
         <Slider.Thumb
-          className="hidden p-1 w-8 aspect-square rounded-full bg-gray-400 outline-0 group-hover:block"
+          className="hidden p-1 w-8 aspect-square rounded-full bg-cyan-500 outline-0 group-hover:block"
           aria-label="Volume"
         />
       </Slider.Root>
