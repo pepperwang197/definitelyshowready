@@ -15,9 +15,13 @@ export interface PartState {
 }
 
 interface SongData {
+  songName: string;
+  keySignature: string;
+  timeSignature: string;
+  bpm: string;
+  duration: number;
   names: Array<string>;
   paths: Array<string>;
-  duration: number;
 }
 
 export default function App() {
@@ -34,6 +38,11 @@ export default function App() {
   useEffect(() => {
     // TODO: actually get files from api
     const data = {
+      songName: "The Key Is",
+      keySignature: "G major",
+      timeSignature: "4/4",
+      bpm: "♩=126",
+      duration: 3 * 60 + 9,
       names: [
         "Alice",
         "White Rabbit",
@@ -54,7 +63,6 @@ export default function App() {
         "/src/testing_tracks/Tenor.wav",
         "/src/testing_tracks/Baritone.wav",
       ],
-      duration: 3 * 60 + 9,
     };
     setSongData(data);
     setPartStates(
@@ -161,29 +169,40 @@ export default function App() {
 
   return (
     <div className="m-20 max-w-300 flex flex-col gap-10">
-      {partStates?.map((part, index) =>
-        index === 0 ? (
-          <audio
-            onEnded={handlePause}
-            onTimeUpdate={updateTime}
-            ref={(ref) => {
-              audioRefs.current[index] = ref;
-            }}
-            muted={part.muted || (partsSoloed > 0 && !part.soloed)}
-            src={part.path}
-            key={part.name}
-          />
-        ) : (
-          <audio
-            ref={(ref) => {
-              audioRefs.current[index] = ref;
-            }}
-            muted={part.muted || (partsSoloed > 0 && !part.soloed)}
-            src={part.path}
-            key={part.name}
-          />
-        ),
-      )}
+      <div className="hidden">
+        {partStates?.map((part, index) =>
+          index === 0 ? (
+            <audio
+              onEnded={handlePause}
+              onTimeUpdate={updateTime}
+              ref={(ref) => {
+                audioRefs.current[index] = ref;
+              }}
+              muted={part.muted || (partsSoloed > 0 && !part.soloed)}
+              src={part.path}
+              key={part.name}
+            />
+          ) : (
+            <audio
+              ref={(ref) => {
+                audioRefs.current[index] = ref;
+              }}
+              muted={part.muted || (partsSoloed > 0 && !part.soloed)}
+              src={part.path}
+              key={part.name}
+            />
+          ),
+        )}
+      </div>
+
+      <div className="flex flex-row items-center gap-8">
+        <h1 className="font-bold text-3xl">{songData?.songName}</h1>
+        {/* <div> */}
+        <p>{songData?.keySignature}</p>
+        <p>{songData?.timeSignature}</p>
+        <p>{songData?.bpm}</p>
+        {/* </div> */}
+      </div>
 
       <Transport
         duration={songData?.duration || 0}
