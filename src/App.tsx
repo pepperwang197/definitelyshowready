@@ -4,6 +4,7 @@ import { Soundfont, ElectricPiano } from "smplr";
 
 import Transport from "./components/Transport";
 import PartSettings from "./components/PartSettings";
+import { duration } from "@mui/material";
 
 export interface PartState {
   name: string;
@@ -24,13 +25,13 @@ interface SongData {
 
 export default function App() {
   const audioCtxRef = useRef<AudioContext>(null);
-  const audioBufferRef = useRef<AudioBuffer>(null);
-  const sourceNodeRef = useRef<AudioBufferSourceNode>(null);
+  const backingAudioRef = useRef<HTMLAudioElement>(null);
 
   const [songData, setSongData] = useState<SongData>();
   const [midiData, setMidiData] = useState<ArrayBuffer>();
+  const [audioBlobUrl, setAudioBlobUrl] = useState<string>();
 
-  const [player, setPlayer] = useState<MidiPlayer.Player>();
+  const [midiPlayer, setMidiPlayer] = useState<MidiPlayer.Player>();
   const [piano, setPiano] = useState<Soundfont>();
 
   const [playing, setPlaying] = useState(false);
@@ -66,16 +67,15 @@ export default function App() {
         console.log(response);
         return response.arrayBuffer();
       })
-      .then((data) => {
-        console.log("received audio:", data);
-        return audioCtxRef.current!.decodeAudioData(data);
-      })
-      .then((decodedData) => {
-        audioBufferRef.current = decodedData;
-        sourceNodeRef.current = audioCtxRef.current!.createBufferSource();
-        sourceNodeRef.current.buffer = audioBufferRef.current;
+      .then((arrayBuffer) => {
+        console.log("received audio:", arrayBuffer);
+        // Create a Blob from the ArrayBuffer
+        const blob = new Blob([arrayBuffer], { type: "audio/wav" });
 
-        sourceNodeRef.current.connect(audioCtxRef.current!.destination);
+        // Generate a temporary DOM URL pointing to the blob data
+        setAudioBlobUrl(URL.createObjectURL(blob));
+
+        // audio.src = blobUrl;
       })
       .catch((error) => console.error("Error fetching data:", error));
 
@@ -145,6 +145,8 @@ export default function App() {
           case "Note off":
             piano?.stop(event.noteName);
             break;
+          case "Set Tempo":
+          // event.data is the bpm
           case "End of Track":
             handlePause();
             break;
@@ -154,15 +156,13 @@ export default function App() {
 
       // console.log("loaded");
 
-      myPlayer.on("playing", function (currentTick) {
-        console.log("playing", currentTick);
-      });
+      myPlayer.on("playing", function (currentTick) {});
 
       // myPlayer.on("midiEvent", function (event) {
       //   console.log("midi event");
       // });
 
-      setPlayer(myPlayer);
+      setMidiPlayer(myPlayer);
 
       // console.log("player", myPlayer);
     }
@@ -189,8 +189,8 @@ export default function App() {
     if (!playing) {
       console.log("PLAY");
       setPlaying(true);
-      player?.play();
-      sourceNodeRef.current!.start(0);
+      midiPlayer?.play();
+      backingAudioRef.current!.play();
     }
   }
 
@@ -198,18 +198,25 @@ export default function App() {
     if (playing) {
       console.log("PAUSE");
       setPlaying(false);
-      player?.pause();
+      midiPlayer?.pause();
+      backingAudioRef.current!.pause();
     }
   }
 
   function handleMove(timestamp: number) {
     setCurrentTime(timestamp);
-    player?.skipToSeconds(timestamp);
+    midiPlayer?.skipToSeconds(timestamp);
+    if (playing) {
+      midiPlayer?.play();
+    }
+    backingAudioRef.current!.currentTime = timestamp;
   }
 
   function updateTime() {
-    // update time based on audio elements' current time
-    setCurrentTime(player?.getSongTime() || 0);
+    // called by backing track audio element
+    const time = songData!.duration - midiPlayer!.getSongTimeRemaining() || 0;
+    console.log(midiPlayer!.getSongTimeRemaining());
+    setCurrentTime(time);
   }
 
   function updateVolume(name: string, volume: number) {
@@ -247,7 +254,15 @@ export default function App() {
 
   return (
     <div className="m-20 max-w-300 flex flex-col gap-10">
-      <div className="hidden">
+      <audio
+        onEnded={handlePause}
+        onTimeUpdate={updateTime}
+        ref={(ref) => {
+          backingAudioRef.current = ref;
+        }}
+        src={audioBlobUrl}
+      />
+      {/*<div className="hidden">
         {partStates?.map((part, index) =>
           index === 0 ? (
             <audio
@@ -271,7 +286,7 @@ export default function App() {
             />
           ),
         )}
-      </div>
+      </div>*/}
 
       <div className="flex flex-row items-center gap-8">
         <h1 className="font-bold text-3xl">{songData?.songName}</h1>
