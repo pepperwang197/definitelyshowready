@@ -1,14 +1,12 @@
-// import { useContext } from "react";
-// import { TrackContext, TrackContext } from "./context/TrackContext";
 import { useState, useRef, useEffect } from "react";
-// import { useEffect } from "react";
+import { Howl } from "howler";
 
 import Transport from "./components/Transport";
 import PartSettings from "./components/PartSettings";
 
 export interface PartState {
   name: string;
-  path: string;
+  track: Howl;
   volume: number;
   muted: boolean;
   soloed: boolean;
@@ -20,8 +18,7 @@ interface SongData {
   timeSignature: string;
   bpm: string;
   duration: number;
-  names: Array<string>;
-  paths: Array<string>;
+  filenames: Array<string>;
 }
 
 export default function App() {
@@ -32,49 +29,34 @@ export default function App() {
   const [partStates, setPartStates] = useState<Array<PartState>>([]);
   const [partsSoloed, setPartsSoloed] = useState(0);
 
-  const audioRefs = useRef<Array<HTMLAudioElement | null>>([]);
-
-  // get all track data
+  // API CALL
   useEffect(() => {
-    // TODO: actually get files from api
-    const data = {
-      songName: "The Key Is",
-      keySignature: "G major",
-      timeSignature: "4/4",
-      bpm: "♩=126",
-      duration: 3 * 60 + 9,
-      names: [
-        "Alice",
-        "White Rabbit",
-        "Caterpillar 1",
-        "Caterpillar 2",
-        "Soprano",
-        "Alto",
-        "Tenor",
-        "Baritone",
-      ],
-      paths: [
-        "/src/testing_tracks/Alice_wow.wav",
-        "/src/testing_tracks/White_Rabbit.wav",
-        "/src/testing_tracks/Caterpillar_1.wav",
-        "/src/testing_tracks/Caterpillar_2.wav",
-        "/src/testing_tracks/Soprano.wav",
-        "/src/testing_tracks/Alto.wav",
-        "/src/testing_tracks/Tenor.wav",
-        "/src/testing_tracks/Baritone.wav",
-      ],
-    };
-    setSongData(data);
-    setPartStates(
-      data.names.map((name, index) => ({
-        // change later
-        name: name,
-        path: data.paths[index],
-        volume: 0.7,
-        muted: false,
-        soloed: false,
-      })),
-    );
+    fetch("http://localhost:8080/data")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json(); // Parse the JSON data
+      })
+      .then((data) => {
+        console.log("received metadata:", data);
+
+        setSongData(data);
+
+        setPartStates(
+          data.filenames.map((filename: string) => ({
+            // change later
+            name: filename.split(".")[0],
+            track: new Howl({
+              src: `http://localhost:8080/files/${filename}`,
+            }),
+            volume: 0.7,
+            muted: false,
+            soloed: false,
+          })),
+        );
+      })
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
   useEffect(() => {
@@ -93,21 +75,20 @@ export default function App() {
     };
   }, [playing]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(
-  //     () => playing && updateTime(currentTime + 0.1),
-  //     100,
-  //   );
-  //   // console.log(audioRefs.current[0]);
-  //   return () => clearTimeout(timer);
-  // }, [currentTime, playing]);
+  useEffect(() => {
+    const timer = setTimeout(
+      () => playing && updateTime(currentTime + 0.1),
+      100,
+    );
+    return () => clearTimeout(timer);
+  }, [currentTime, playing]);
 
   function handlePlay() {
     if (!playing) {
       console.log("PLAY");
       setPlaying(true);
-      audioRefs.current.forEach((ref) => {
-        ref!.play();
+      partStates.forEach((part) => {
+        part.track.play();
       });
     }
   }
@@ -116,29 +97,28 @@ export default function App() {
     if (playing) {
       console.log("PAUSE");
       setPlaying(false);
-      audioRefs.current.forEach((ref) => {
-        ref?.pause();
+      partStates.forEach((part) => {
+        part.track.pause();
       });
     }
   }
 
   function handleMove(timestamp: number) {
     setCurrentTime(timestamp);
-    audioRefs.current.forEach((ref) => {
-      ref!.currentTime = timestamp;
+    partStates.forEach((part) => {
+      part.track.seek(timestamp);
     });
   }
 
-  function updateTime() {
-    // update time based on audio elements' current time
-    setCurrentTime(audioRefs.current[0]?.currentTime || 0);
+  function updateTime(timestamp: number) {
+    setCurrentTime(timestamp);
   }
 
   function updateVolume(name: string, volume: number) {
     setPartStates((prev: Array<PartState>) =>
-      prev.map((part, index) => {
+      prev.map((part) => {
         if (part.name === name) {
-          audioRefs.current[index]!.volume = volume;
+          part.track.volume(volume);
         }
         return part.name === name ? { ...part, volume: volume } : part;
       }),
@@ -147,54 +127,47 @@ export default function App() {
 
   function updateMute(name: string, mute: boolean) {
     setPartStates((prev: Array<PartState>) =>
-      prev.map((part) =>
-        part.name === name ? { ...part, muted: mute } : part,
-      ),
+      prev.map((part) => {
+        if (part.name === name) {
+          part.track.mute(mute);
+        }
+        return part.name === name ? { ...part, muted: mute } : part;
+      }),
     );
   }
 
   function updateSolo(name: string, solo: boolean) {
+    let updatedPartsSoloed = partsSoloed;
+
     if (solo) {
-      setPartsSoloed((prev) => prev + 1);
+      updatedPartsSoloed++;
     } else {
-      setPartsSoloed((prev) => prev - 1);
+      updatedPartsSoloed--;
     }
 
-    setPartStates((prev: Array<PartState>) =>
-      prev.map((part) =>
-        part.name === name ? { ...part, soloed: solo } : part,
-      ),
+    console.log(updatedPartsSoloed);
+
+    let updatedStates = partStates.map((part) =>
+      part.name === name ? { ...part, soloed: solo } : part,
     );
+
+    partStates.forEach((part, index) => {
+      if (
+        part.muted ||
+        (updatedPartsSoloed > 0 && !updatedStates[index].soloed)
+      ) {
+        part.track.mute(true);
+      } else {
+        part.track.mute(false);
+      }
+    });
+
+    setPartsSoloed(updatedPartsSoloed);
+    setPartStates(updatedStates);
   }
 
   return (
     <div className="m-20 max-w-300 flex flex-col gap-10">
-      <div className="hidden">
-        {partStates?.map((part, index) =>
-          index === 0 ? (
-            <audio
-              onEnded={handlePause}
-              onTimeUpdate={updateTime}
-              ref={(ref) => {
-                audioRefs.current[index] = ref;
-              }}
-              muted={part.muted || (partsSoloed > 0 && !part.soloed)}
-              src={part.path}
-              key={part.name}
-            />
-          ) : (
-            <audio
-              ref={(ref) => {
-                audioRefs.current[index] = ref;
-              }}
-              muted={part.muted || (partsSoloed > 0 && !part.soloed)}
-              src={part.path}
-              key={part.name}
-            />
-          ),
-        )}
-      </div>
-
       <div className="flex flex-row items-center gap-8">
         <h1 className="font-bold text-3xl">{songData?.songName}</h1>
         {/* <div> */}
