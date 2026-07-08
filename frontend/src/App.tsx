@@ -36,7 +36,7 @@ export default function App() {
 
   // API CALL
   useEffect(() => {
-    fetch("http://localhost:8080/data")
+    fetch(new URL("/data/", import.meta.env.BACKEND_URL))
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");

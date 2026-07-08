@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 )
 
 func metadataHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,12 +50,19 @@ func newHandler() http.Handler {
 	mux.Handle("/files", cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/files/", http.StatusTemporaryRedirect)
 	})))
+	
 	mux.Handle("/data", cors(http.HandlerFunc(metadataHandler)))
 
 	return mux
 }
 
 func main() {
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
 	fmt.Println("starting server")
-	http.ListenAndServe(":8080", newHandler())
+	http.ListenAndServe(":"+port, newHandler())
 }
