@@ -3,6 +3,7 @@ import { Howl } from "howler";
 
 import Transport from "./components/Transport";
 import PartSettings from "./components/PartSettings";
+import Click from "./components/Click";
 
 export interface PartState {
   name: string;
@@ -16,7 +17,10 @@ interface SongData {
   songName: string;
   keySignature: string;
   timeSignature: string;
-  bpm: string;
+  bpmUnit: string;
+  bpm: number;
+  secsPerBeat: number;
+  offset: number;
   duration: number;
   filenames: Array<string>;
 }
@@ -25,6 +29,7 @@ export default function App() {
   const [songData, setSongData] = useState<SongData>();
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [beat, setBeat] = useState(0);
   const [masterVolume, setMasterVolume] = useState(100);
   const [partStates, setPartStates] = useState<Array<PartState>>([]);
   const [partsSoloed, setPartsSoloed] = useState(0);
@@ -41,13 +46,15 @@ export default function App() {
       .then((data) => {
         console.log("received metadata:", data);
 
-        setSongData(data);
+        // TODO: have backend actually give offset
+        setSongData({ ...data, secsPerBeat: 60 / data.bpm, offset: 0 });
 
         setPartStates(
           data.filenames.map((filename: string) => ({
             // change later
             name: filename.split(".")[0],
             track: new Howl({
+              // src: `http://localhost:8080/files/${encodeURIComponent(filename)}?t=${Date.now()}`,
               src: `http://localhost:8080/files/${filename}`,
             }),
             volume: 0.7,
@@ -76,11 +83,18 @@ export default function App() {
   }, [playing]);
 
   useEffect(() => {
-    const timer = setTimeout(
-      () => playing && updateTime(currentTime + 0.1),
-      100,
-    );
-    return () => clearTimeout(timer);
+    if (songData) {
+      const timer = setTimeout(() => {
+        if (playing) {
+          const newTime = currentTime + 20 / 1000;
+          if ((beat + 1) * songData.secsPerBeat + songData.offset <= newTime) {
+            setBeat(beat + 1);
+          }
+          setCurrentTime(newTime);
+        }
+      }, 20);
+      return () => clearTimeout(timer);
+    }
   }, [currentTime, playing]);
 
   function handlePlay() {
@@ -108,10 +122,6 @@ export default function App() {
     partStates.forEach((part) => {
       part.track.seek(timestamp);
     });
-  }
-
-  function updateTime(timestamp: number) {
-    setCurrentTime(timestamp);
   }
 
   function updateVolume(name: string, volume: number) {
@@ -168,13 +178,16 @@ export default function App() {
 
   return (
     <div className="m-20 max-w-300 flex flex-col gap-10">
+      <Click beat={beat} />
+
       <div className="flex flex-row items-center gap-8">
         <h1 className="font-bold text-3xl">{songData?.songName}</h1>
-        {/* <div> */}
         <p>{songData?.keySignature}</p>
         <p>{songData?.timeSignature}</p>
-        <p>{songData?.bpm}</p>
-        {/* </div> */}
+        <p>
+          <span className="text-2xl">{songData?.bpmUnit}</span> ={" "}
+          {songData?.bpm}
+        </p>
       </div>
 
       <Transport

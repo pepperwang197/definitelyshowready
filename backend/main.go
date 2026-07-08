@@ -13,9 +13,10 @@ func metadataHandler(w http.ResponseWriter, r *http.Request) {
 			"songName": "Still",
 			"keySignature": "F# maj",
 			"timeSignature": "12/8",
-			"bpm": "dotted quarter = 124",
+			"bpmUnit": "𝅘𝅥.",
+			"bpm": "124",
 			"duration": 135,
-			"filenames": ["Alice.wav", "Alfred.wav", "Still.wav"]
+			"filenames": ["Alice.wav", "Alfred.wav", "BackingTrack.wav"]
 		}
 	`)
 }
