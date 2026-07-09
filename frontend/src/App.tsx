@@ -26,6 +26,7 @@ interface SongData {
 }
 
 export default function App() {
+  const backendBaseUrl = import.meta.env.VITE_BACKEND_URL ?? "";
   const [songData, setSongData] = useState<SongData>();
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -36,7 +37,8 @@ export default function App() {
 
   // API CALL
   useEffect(() => {
-    fetch(new URL("/data/", import.meta.env.BACKEND_URL))
+    const requestBase = backendBaseUrl || window.location.origin;
+    fetch(new URL("/data", requestBase))
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -54,8 +56,7 @@ export default function App() {
             // change later
             name: filename.split(".")[0],
             track: new Howl({
-              // src: `http://localhost:8080/files/${encodeURIComponent(filename)}?t=${Date.now()}`,
-              src: `http://localhost:8080/files/${filename}`,
+              src: new URL(`/files/${filename}`, requestBase).toString(),
             }),
             volume: 0.7,
             muted: false,
@@ -64,7 +65,7 @@ export default function App() {
         );
       })
       .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  }, [backendBaseUrl]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
