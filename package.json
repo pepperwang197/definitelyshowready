@@ -1,5 +1,6 @@
 {
   "name": "section02",
+  "homepage": "https://pepperwang197.github.io/definitelyshowready",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,7 +8,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -15,6 +18,7 @@
     "@mui/icons-material": "^9.0.1",
     "@mui/material": "^9.0.1",
     "@tailwindcss/vite": "^4.3.0",
+    "gh-pages": "^6.3.0",
     "howler": "^2.2.4",
     "radix-ui": "^1.4.3",
     "react": "^19.2.6",
