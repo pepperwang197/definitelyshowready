@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { Howl } from "howler";
 
 import Transport from "./components/Transport";
@@ -35,7 +35,7 @@ export default function App() {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [beat, setBeat] = useState(0);
-  const [masterVolume, setMasterVolume] = useState(100);
+  // const [masterVolume, setMasterVolume] = useState(100);
   const [partStates, setPartStates] = useState<Array<PartState>>([]);
   const [partsSoloed, setPartsSoloed] = useState(0);
 
