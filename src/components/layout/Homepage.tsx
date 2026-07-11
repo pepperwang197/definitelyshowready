@@ -1,7 +1,7 @@
 export default function Homepage() {
   return (
-    <div className="flex flex-col items-center m-16">
-      <h1 className="p-4 font-bold text-4xl">
+    <div className="flex flex-col items-center m-8 md:m-16">
+      <h1 className="p-4 font-bold text-3xl md:text-4xl">
         Welcome to <span className="text-cyan-500">DefinitelyShowReady</span>!
       </h1>
       <h3>
@@ -10,8 +10,8 @@ export default function Homepage() {
       </h3>
       {/* <iframe src="https://outlook.office365.com/owa/calendar/0922c36df0874596bafefdceb8261917@olin.edu/a5a88ef8f36f40e192800a4e1bdefe7918049265861158770921/calendar.html" /> */}
 
-      <div className="flex flex-row p-10 gap-10">
-        <div className="border border-slate-300 rounded-md p-6">
+      <div className="flex flex-col md:flex-row pt-10 gap-6">
+        <div className="border w-full md:max-w-80 border-slate-300 rounded-md p-6">
           <h2 className="font-bold text-xl pb-2">Quick Links</h2>
           <ul>
             <li>
@@ -32,7 +32,7 @@ export default function Homepage() {
             </li>
           </ul>
         </div>
-        <div className="border border-slate-300 rounded-md p-6">
+        <div className="border w-full md:max-w-80 border-slate-300 rounded-md p-6">
           <h2 className="font-bold text-xl pb-2">Important Dates</h2>
           <ul>
             <li>Off book for lines: __</li>

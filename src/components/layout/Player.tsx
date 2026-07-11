@@ -170,7 +170,7 @@ export default function Player(props: PlayerProps) {
 
   return (
     <>
-      <div className="mx-20 my-10 max-w-200 flex flex-col gap-10">
+      <div className="px-10 md:px-20 py-10 max-w-200 flex flex-col gap-6 md:gap-10">
         {/* <Click beat={beat} /> */}
 
         <div className="flex flex-row items-center gap-8">

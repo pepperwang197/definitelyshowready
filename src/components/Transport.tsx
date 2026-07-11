@@ -22,26 +22,36 @@ export default function Transport(props: TransportProps) {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4">
-        <button onClick={() => props.move(0)}>
-          <SkipPreviousIcon fontSize="large" />
-        </button>
-        {props.playing ? (
-          <button onClick={props.pause}>
-            <PauseIcon fontSize="large" />
+      <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+        <div className="flex flex-row items-center gap-4">
+          <button onClick={() => props.move(0)}>
+            <SkipPreviousIcon fontSize="large" />
           </button>
-        ) : (
-          <button onClick={props.play}>
-            <PlayArrowIcon fontSize="large" />
-          </button>
-        )}
-        <p>{formatTime(props.currentTime)}</p>
+          {props.playing ? (
+            <button onClick={props.pause}>
+              <PauseIcon fontSize="large" />
+            </button>
+          ) : (
+            <button onClick={props.play}>
+              <PlayArrowIcon fontSize="large" />
+            </button>
+          )}
+        </div>
+
+        <p className="hidden md:block">{formatTime(props.currentTime)}</p>
+
         <ProgressBar
           duration={props.duration}
           currentTime={props.currentTime}
           move={props.move}
         />
-        <p>{formatTime(props.duration)}</p>
+
+        <p className="hidden md:block">{formatTime(props.duration)}</p>
+
+        <div className="md:hidden w-full flex flex-row justify-between">
+          <p className="">{formatTime(props.currentTime)}</p>
+          <p className="">{formatTime(props.duration)}</p>
+        </div>
       </div>
     </>
   );

@@ -24,6 +24,7 @@ export default function App() {
     "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
 
   const [metadata, setMetadata] = useState<Array<SongData>>([]);
+  const [sidebarExp, setSidebarExp] = useState(false);
 
   useEffect(() => {
     fetch(urlBase + "data.json")
@@ -41,12 +42,18 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Header />
+      <Header
+        onExpandToggle={() => {
+          setSidebarExp(!sidebarExp);
+        }}
+      />
 
       <div className="flex flex-row h-full">
-        <div className="h-screen">
-          <Sidebar metadata={metadata || []} />
-        </div>
+        {sidebarExp && (
+          <div className="h-screen">
+            <Sidebar metadata={metadata || []} />
+          </div>
+        )}
 
         <div className="size-full">
           <Routes>
