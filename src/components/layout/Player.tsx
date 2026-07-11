@@ -3,7 +3,7 @@ import { Howl } from "howler";
 
 import Transport from "../Transport";
 import PartSettings from "../PartSettings";
-import Click from "../Click";
+// import Click from "../Click";
 
 import type { SongData } from "../../App";
 
@@ -171,7 +171,7 @@ export default function Player(props: PlayerProps) {
   return (
     <>
       <div className="mx-20 my-10 max-w-200 flex flex-col gap-10">
-        <Click beat={beat} />
+        {/* <Click beat={beat} /> */}
 
         <div className="flex flex-row items-center gap-8">
           <h1 className="font-bold text-3xl">{props.songData.displayName}</h1>
