@@ -9,12 +9,12 @@ export default function ClickTrack(props: ClickProps) {
   const [sound, setSound] = useState<Howl>();
 
   useEffect(() => {
-    setSound(new Howl({ src: "/src/assets/click.wav" }));
+    setSound(new Howl({ src: "./assets/click.wav" }));
     console.log("made sound");
   }, []);
 
   useEffect(() => {
-    sound?.play();
+    // sound?.play();
   }, [props.beat]);
 
   return <></>;

@@ -1,5 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Solway:wght@300;400;500;700;800&display=swap");
 @import "tailwindcss";
 
-/* @theme {
-  --color-mint-500: oklch(0.72 0.11 178);
-} */
+@theme {
+  --font-sans: "Solway";
+}

@@ -1,5 +1,5 @@
 import Settings from "./Settings";
-import type { PartState } from "../App";
+import type { PartState } from "./layout/Player";
 
 interface PartSettingsProps {
   partStates: Array<PartState>;

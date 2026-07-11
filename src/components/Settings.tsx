@@ -1,4 +1,4 @@
-import type { PartState } from "../App";
+import type { PartState } from "./layout/Player";
 import { Slider } from "radix-ui";
 import ToggleButton from "./ToggleButton";
 
