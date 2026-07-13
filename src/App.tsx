@@ -27,7 +27,7 @@ export default function App() {
   const [sidebarExp, setSidebarExp] = useState(false);
 
   useEffect(() => {
-    fetch(urlBase + "data.json")
+    fetch(urlBase + "data.json", { cache: "no-store" })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");

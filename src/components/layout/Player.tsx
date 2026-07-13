@@ -6,6 +6,7 @@ import PartSettings from "../PartSettings";
 // import Click from "../Click";
 
 import type { SongData } from "../../App";
+import Spinner from "../Spinner";
 
 interface PlayerProps {
   songData: SongData;
@@ -23,6 +24,7 @@ export default function Player(props: PlayerProps) {
   const urlBase =
     "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
 
+  const [tracksLoaded, setTracksLoaded] = useState<Array<boolean>>([]);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [beat, setBeat] = useState(0);
@@ -32,21 +34,33 @@ export default function Player(props: PlayerProps) {
 
   // API CALL
   useEffect(() => {
+    setTracksLoaded(Array(props.songData.filenames.length).fill(false));
+    handlePause();
+
     console.log("received metadata:", props.songData);
 
     setPartStates(
       props.songData.filenames.map((filename: string, index: number) => ({
-        // change later
         name: props.songData.parts[index],
         track: new Howl({
           src: urlBase + props.songData.dirName + filename,
+          onload: () => {
+            setTracksLoaded((prev) => {
+              return prev.map((element, i) => (i == index ? true : element));
+            });
+            console.log(props.songData.parts[index]);
+          },
         }),
         volume: 0.7,
         muted: false,
         soloed: false,
       })),
     );
-  }, []);
+  }, [props.songData]);
+
+  useEffect(() => {
+    handleMove(0);
+  }, [tracksLoaded.every((element) => element)]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
@@ -72,14 +86,12 @@ export default function Player(props: PlayerProps) {
     return () => clearTimeout(intervalId);
   }, [props.songData, currentTime, playing]);
 
-  // console.log("dependencies:", currentTime, playing);
-
   function updateTime() {
     if (currentTime >= props.songData.duration) {
       handlePause();
     }
     if (playing) {
-      const newTime = partStates[2].track.seek();
+      const newTime = partStates[0].track.seek();
       if (
         (beat + 1) * props.songData.secsPerBeat + props.songData.offset <=
         newTime
@@ -93,6 +105,9 @@ export default function Player(props: PlayerProps) {
   function handlePlay() {
     if (!playing) {
       console.log("PLAY");
+
+      handleMove(currentTime); // in case the tracks time gets off
+
       setPlaying(true);
       partStates.forEach((part) => {
         part.track.play();
@@ -170,6 +185,8 @@ export default function Player(props: PlayerProps) {
 
   return (
     <>
+      {!tracksLoaded.every((element) => element) && <Spinner />}
+
       <div className="px-10 md:px-20 py-10 max-w-200 flex flex-col gap-6 md:gap-10">
         {/* <Click beat={beat} /> */}
 
