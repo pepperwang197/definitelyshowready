@@ -1,6 +1,6 @@
 export default function Homepage() {
   return (
-    <div className="flex flex-col items-center m-8 md:m-16">
+    <div className="flex flex-col items-center m-8 md:m-16 bg-white dark:bg-gray-900 text-black dark:text-white border-slate-300 dark:border-gray-600">
       <h1 className="p-4 font-bold text-3xl md:text-4xl">
         Welcome to <span className="text-cyan-500">DefinitelyShowReady</span>!
       </h1>
@@ -11,13 +11,13 @@ export default function Homepage() {
       {/* <iframe src="https://outlook.office365.com/owa/calendar/0922c36df0874596bafefdceb8261917@olin.edu/a5a88ef8f36f40e192800a4e1bdefe7918049265861158770921/calendar.html" /> */}
 
       <div className="flex flex-col md:flex-row pt-10 gap-6">
-        <div className="border w-full md:max-w-80 border-slate-300 rounded-md p-6">
+        <div className="border border-slate-300 dark:border-gray-600 w-full md:max-w-80 rounded-md p-6">
           <h2 className="font-bold text-xl pb-2">Quick Links</h2>
           <ul>
             <li>
               <a
                 href="https://drive.google.com/drive/u/0/folders/1t0m36WNsImSRF3RSFu6PgIJ3pKvEdAvT"
-                className="underline text-cyan-700"
+                className="underline text-cyan-700 dark:text-cyan-300"
               >
                 Alice By Heart Google Drive
               </a>
@@ -25,14 +25,14 @@ export default function Homepage() {
             <li>
               <a
                 href="https://drive.google.com/file/d/1qntWhS7FfXRi-hTmxEDAblWWAQLLjyhH/view?usp=drive_link"
-                className="underline text-cyan-700"
+                className="underline text-cyan-700 dark:text-cyan-300"
               >
                 Script + Vocal Book
               </a>
             </li>
           </ul>
         </div>
-        <div className="border w-full md:max-w-80 border-slate-300 rounded-md p-6">
+        <div className="border border-slate-300 dark:border-gray-600 w-full md:max-w-80 rounded-md p-6">
           <h2 className="font-bold text-xl pb-2">Important Dates</h2>
           <ul>
             <li>Off book for lines: __</li>

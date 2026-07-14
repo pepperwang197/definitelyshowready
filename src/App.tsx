@@ -26,6 +26,11 @@ export default function App() {
 
   const [metadata, setMetadata] = useState<Array<SongData>>([]);
   const [sidebarExp, setSidebarExp] = useState(false);
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    setDark(localStorage.getItem("dark") == "true" ? true : false);
+  }, []);
 
   useEffect(() => {
     fetch(urlBase + "data.json", { cache: "no-store" })
@@ -41,20 +46,29 @@ export default function App() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
+  function handleToggleDark() {
+    setDark(!dark);
+    localStorage.setItem("dark", !dark ? "true" : "false");
+  }
+
   return (
     <BrowserRouter>
-      <div className="flex flex-col h-screen">
+      <div
+        className={`flex flex-col h-screen ${dark ? "dark" : ""} bg-white dark:bg-gray-900`}
+      >
         <div className="sticky top-0">
           <Header
+            dark={dark}
+            onToggleDark={handleToggleDark}
             onExpandToggle={() => {
               setSidebarExp(!sidebarExp);
             }}
           />
         </div>
 
-        <div className="grow flex flex-row overflow-hidden">
+        <div className="grow flex flex-row overflow-hidden ">
           {sidebarExp && (
-            <div className="flex h-full min-w-60 border-r border-slate-300">
+            <div className="flex h-full min-w-60 border-r border-slate-300 dark:border-gray-600">
               <MyScrollArea>
                 <Sidebar metadata={metadata || []} />
               </MyScrollArea>

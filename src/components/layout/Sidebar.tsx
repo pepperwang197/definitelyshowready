@@ -8,11 +8,11 @@ interface SidebarProps {
 
 export default function Sidebar(props: SidebarProps) {
   return (
-    <div className="min-w-60 h-full flex flex-col">
+    <div className="min-w-60 h-full flex flex-col text-black dark:text-white">
       {props.metadata.map((data: SongData) => (
         <Link
           to={`definitelyshowready/${data.dirName}/`}
-          className="p-4 hover:bg-slate-100 border-b border-slate-300"
+          className="p-4 hover:bg-slate-100 dark:hover:bg-gray-800 border-b border-slate-300 dark:border-gray-600"
           key={data.dirName}
         >
           {data.displayName}
