@@ -8,7 +8,7 @@ interface SidebarProps {
 
 export default function Sidebar(props: SidebarProps) {
   return (
-    <div className="min-w-60 h-full flex flex-col border-r border-slate-300">
+    <div className="min-w-60 h-full flex flex-col">
       {props.metadata.map((data: SongData) => (
         <Link
           to={`definitelyshowready/${data.dirName}/`}

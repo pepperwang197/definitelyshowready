@@ -11,7 +11,7 @@ export default function Header(props: HeaderProps) {
     "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
 
   return (
-    <div className="w-full px-6 py-4 border-b border-slate-300 text-cyan-500 text-l font-black flex items-center gap-6">
+    <div className="w-full px-6 py-4 bg-white border-b border-slate-300 text-cyan-500 text-l font-black flex items-center gap-6">
       <button className="cursor-pointer" onClick={props.onExpandToggle}>
         <MenuIcon fontSize="large" />
       </button>

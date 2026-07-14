@@ -2,6 +2,7 @@ import Header from "./components/layout/Header";
 import Player from "./components/layout/Player";
 import Homepage from "./components/layout/Homepage";
 import Sidebar from "./components/layout/Sidebar";
+import MyScrollArea from "./components/MyScrollArea";
 import { BrowserRouter, Routes, Route } from "react-router";
 import { useEffect, useState } from "react";
 
@@ -42,29 +43,37 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Header
-        onExpandToggle={() => {
-          setSidebarExp(!sidebarExp);
-        }}
-      />
+      <div className="flex flex-col h-screen">
+        <div className="sticky top-0">
+          <Header
+            onExpandToggle={() => {
+              setSidebarExp(!sidebarExp);
+            }}
+          />
+        </div>
 
-      <div className="flex flex-row h-full">
-        {sidebarExp && (
-          <div className="h-screen">
-            <Sidebar metadata={metadata || []} />
+        <div className="grow flex flex-row overflow-hidden">
+          {sidebarExp && (
+            <div className="flex h-full min-w-60 border-r border-slate-300">
+              <MyScrollArea>
+                <Sidebar metadata={metadata || []} />
+              </MyScrollArea>
+            </div>
+          )}
+
+          <div className="grow">
+            <MyScrollArea>
+              <Routes>
+                <Route path="definitelyshowready" element={<Homepage />} />
+                {metadata.map((data: SongData) => (
+                  <Route
+                    path={`definitelyshowready/${data.dirName}`}
+                    element={<Player songData={data} />}
+                  />
+                ))}
+              </Routes>
+            </MyScrollArea>
           </div>
-        )}
-
-        <div className="size-full">
-          <Routes>
-            <Route path="definitelyshowready" element={<Homepage />} />
-            {metadata.map((data: SongData) => (
-              <Route
-                path={`definitelyshowready/${data.dirName}`}
-                element={<Player songData={data} />}
-              />
-            ))}
-          </Routes>
         </div>
       </div>
     </BrowserRouter>
