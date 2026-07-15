@@ -12,7 +12,7 @@ interface SettingsProps {
 export default function Settings(props: SettingsProps) {
   return (
     <div className="flex flex-col gap-2 md:flex-row md:gap-4 md:items-center">
-      <p className="w-30">{props.state.name}</p>
+      <p className="md:w-30">{props.state.name}</p>
       <div className="w-full flex flex-row items-center justify-between gap-4">
         <ToggleButton
           value={props.state.muted}

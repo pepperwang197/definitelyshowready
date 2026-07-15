@@ -54,7 +54,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <div
-        className={`flex flex-col h-screen ${dark ? "dark" : ""} bg-white dark:bg-gray-900`}
+        className={`flex flex-col overflow-hidden h-dvh ${dark ? "dark" : ""} bg-white dark:bg-gray-900`}
       >
         <div className="sticky top-0">
           <Header
