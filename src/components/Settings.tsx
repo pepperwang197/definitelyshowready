@@ -39,7 +39,7 @@ export default function Settings(props: SettingsProps) {
           max={100}
           step={1}
         >
-          <Slider.Track className="relative grow size-full overflow-hidden rounded-full bg-slate-300">
+          <Slider.Track className="relative grow size-full overflow-hidden rounded-full bg-slate-300 dark:bg-gray-600">
             <Slider.Range className="absolute grow h-full bg-cyan-500" />
           </Slider.Track>
           <Slider.Thumb

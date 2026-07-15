@@ -187,7 +187,7 @@ export default function Player(props: PlayerProps) {
     <>
       {!tracksLoaded.every((element) => element) && <Spinner />}
 
-      <div className="px-10 md:px-20 py-10 max-w-200 flex flex-col gap-6 md:gap-10">
+      <div className="px-10 md:px-20 py-10 max-w-200 flex flex-col gap-6 md:gap-10 text-black dark:text-white">
         {/* <Click beat={beat} /> */}
 
         <div className="flex flex-row items-center gap-8">

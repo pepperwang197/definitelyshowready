@@ -24,15 +24,15 @@ export default function Transport(props: TransportProps) {
     <>
       <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
         <div className="flex flex-row items-center gap-4">
-          <button onClick={() => props.move(0)}>
+          <button className="cursor-pointer" onClick={() => props.move(0)}>
             <SkipPreviousIcon fontSize="large" />
           </button>
           {props.playing ? (
-            <button onClick={props.pause}>
+            <button className="cursor-pointer" onClick={props.pause}>
               <PauseIcon fontSize="large" />
             </button>
           ) : (
-            <button onClick={props.play}>
+            <button className="cursor-pointer" onClick={props.play}>
               <PlayArrowIcon fontSize="large" />
             </button>
           )}

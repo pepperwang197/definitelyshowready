@@ -31,7 +31,7 @@ export default function Header(props: HeaderProps) {
       <div className="flex">
         <Popover.Root>
           <Popover.Trigger asChild>
-            <button aria-label="Settings">
+            <button className="cursor-pointer" aria-label="Settings">
               <SettingsIcon fontSize="large" />
             </button>
           </Popover.Trigger>
@@ -43,7 +43,7 @@ export default function Header(props: HeaderProps) {
                 <div className="flex flex-row items-center gap-4">
                   Dark Mode
                   <Switch.Root
-                    className={`w-16 h-9 p-1 rounded-full border transition duration-200 ease-in-out ${props.dark ? "bg-cyan-500" : "bg-slate-100"} border-slate-300 dark:border-gray-600`}
+                    className={`cursor-pointer w-16 h-9 p-1 rounded-full border transition duration-200 ease-in-out ${props.dark ? "bg-cyan-500" : "bg-slate-100"} border-slate-300 dark:border-gray-600`}
                     checked={props.dark}
                     onCheckedChange={props.onToggleDark}
                   >
