@@ -7,6 +7,7 @@ import PartSettings from "../PartSettings";
 
 import type { SongData } from "../../App";
 import Spinner from "../Spinner";
+import SongInfoCard from "../SongInfoCard";
 
 interface PlayerProps {
   songData: SongData;
@@ -187,18 +188,10 @@ export default function Player(props: PlayerProps) {
     <>
       {!tracksLoaded.every((element) => element) && <Spinner />}
 
-      <div className="px-10 md:px-20 py-10 max-w-200 flex flex-col gap-6 md:gap-10 text-black dark:text-white">
+      <div className="px-10 md:px-20 py-10 max-w-200 flex flex-col gap-2 md:gap-10 text-black dark:text-white">
         {/* <Click beat={beat} /> */}
 
-        <div className="flex flex-row items-center gap-8">
-          <h1 className="font-bold text-3xl">{props.songData.displayName}</h1>
-          <p>{props.songData.keySignature}</p>
-          <p>{props.songData.timeSignature}</p>
-          <p>
-            <span className="text-2xl">{props.songData.bpmUnit}</span> ={" "}
-            {props.songData.bpm}
-          </p>
-        </div>
+        <SongInfoCard songData={props.songData} />
 
         <Transport
           duration={props.songData.duration || 0}

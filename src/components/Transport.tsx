@@ -22,7 +22,7 @@ export default function Transport(props: TransportProps) {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+      <div className="flex flex-col py-2 md:py-0 md:flex-row items-center gap-2 md:gap-4">
         <div className="flex flex-row items-center gap-4">
           <button className="cursor-pointer" onClick={() => props.move(0)}>
             <SkipPreviousIcon fontSize="large" />
@@ -38,7 +38,7 @@ export default function Transport(props: TransportProps) {
           )}
         </div>
 
-        <p className="hidden md:block">{formatTime(props.currentTime)}</p>
+        <p className="hidden md:block w-20">{formatTime(props.currentTime)}</p>
 
         <ProgressBar
           duration={props.duration}
