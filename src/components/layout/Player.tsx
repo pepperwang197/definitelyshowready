@@ -105,8 +105,6 @@ export default function Player(props: PlayerProps) {
 
   function handlePlay() {
     if (!playing) {
-      console.log("PLAY");
-
       handleMove(currentTime); // in case the tracks time gets off
 
       setPlaying(true);
@@ -118,11 +116,26 @@ export default function Player(props: PlayerProps) {
 
   function handlePause() {
     if (playing) {
-      console.log("PAUSE");
       setPlaying(false);
       partStates.forEach((part) => {
         part.track.pause();
       });
+    }
+  }
+
+  function handleForward5() {
+    if (currentTime >= props.songData.duration - 5) {
+      handleMove(props.songData.duration);
+    } else {
+      handleMove(currentTime + 5);
+    }
+  }
+
+  function handleBack5() {
+    if (currentTime <= 5) {
+      handleMove(0);
+    } else {
+      handleMove(currentTime - 5);
     }
   }
 
@@ -200,6 +213,8 @@ export default function Player(props: PlayerProps) {
           play={handlePlay}
           pause={handlePause}
           move={handleMove}
+          forward5={handleForward5}
+          back5={handleBack5}
         />
         <PartSettings
           partStates={partStates}
