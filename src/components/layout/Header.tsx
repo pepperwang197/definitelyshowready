@@ -21,7 +21,7 @@ export default function Header(props: HeaderProps) {
         <button className="cursor-pointer" onClick={props.onExpandToggle}>
           <MenuIcon fontSize="large" />
         </button>
-        <Link to="/definitelyshowready">
+        <Link to="/">
           <img
             src={urlBase + "logo.png"}
             alt="DefinitelyShowReady"

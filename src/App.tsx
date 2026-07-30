@@ -3,7 +3,7 @@ import Player from "./components/layout/Player";
 import Homepage from "./components/layout/Homepage";
 import Sidebar from "./components/layout/Sidebar";
 import MyScrollArea from "./components/MyScrollArea";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { HashRouter, Routes, Route } from "react-router";
 import { useEffect, useState } from "react";
 
 export interface SongData {
@@ -60,7 +60,7 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div
         className={`flex flex-col overflow-hidden h-dvh ${dark ? "dark" : ""} bg-white dark:bg-gray-900`}
       >
@@ -88,10 +88,10 @@ export default function App() {
           <div className="grow">
             <MyScrollArea>
               <Routes>
-                <Route path="definitelyshowready" element={<Homepage />} />
+                <Route path="/" element={<Homepage />} />
                 {metadata.map((data: SongData) => (
                   <Route
-                    path={`definitelyshowready/${data.dirName}`}
+                    path={`/${data.dirName}`}
                     element={
                       <Player songData={data} masterVolume={masterVolume} />
                     }
@@ -102,6 +102,6 @@ export default function App() {
           </div>
         </div>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

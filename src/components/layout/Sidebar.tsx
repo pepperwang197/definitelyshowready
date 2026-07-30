@@ -11,7 +11,7 @@ export default function Sidebar(props: SidebarProps) {
     <div className="min-w-60 h-full flex flex-col text-black dark:text-white">
       {props.metadata.map((data: SongData) => (
         <Link
-          to={`definitelyshowready/${data.dirName}/`}
+          to={`/${data.dirName}/`}
           className="p-4 hover:bg-slate-100 dark:hover:bg-gray-800 border-b border-slate-300 dark:border-gray-600"
           key={data.dirName}
         >
