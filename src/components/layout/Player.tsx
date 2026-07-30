@@ -11,6 +11,7 @@ import SongInfoCard from "../SongInfoCard";
 
 interface PlayerProps {
   songData: SongData;
+  masterVolume: number;
 }
 
 export interface PartState {
@@ -45,6 +46,7 @@ export default function Player(props: PlayerProps) {
         name: props.songData.parts[index],
         track: new Howl({
           src: urlBase + props.songData.dirName + filename,
+          volume: 0.7 * props.masterVolume,
           onload: () => {
             setTracksLoaded((prev) => {
               return prev.map((element, i) => (i == index ? true : element));
@@ -64,20 +66,33 @@ export default function Player(props: PlayerProps) {
   }, [tracksLoaded.every((element) => element)]);
 
   useEffect(() => {
+    updateAllVolume();
+  }, [props.masterVolume]);
+
+  useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      if (event.key === " " && !event.repeat) {
+      if (!event.repeat) {
         event.preventDefault();
-        playing ? handlePause() : handlePlay();
+        switch (event.key) {
+          case " ":
+            playing ? handlePause() : handlePlay();
+            break;
+          case "ArrowLeft":
+            handleBack5();
+            break;
+          case "ArrowRight":
+            handleForward5();
+            break;
+        }
       }
     };
 
     window.addEventListener("keydown", handleGlobalKeyDown);
 
-    // Always clean up listeners to prevent application memory leaks
     return () => {
       window.removeEventListener("keydown", handleGlobalKeyDown);
     };
-  }, [playing]);
+  }, [playing, currentTime]);
 
   useEffect(() => {
     // console.log("useeffect timeout being called");
@@ -151,10 +166,16 @@ export default function Player(props: PlayerProps) {
     setPartStates((prev: Array<PartState>) =>
       prev.map((part) => {
         if (part.name === name) {
-          part.track.volume(volume);
+          part.track.volume(volume * props.masterVolume);
         }
         return part.name === name ? { ...part, volume: volume } : part;
       }),
+    );
+  }
+
+  function updateAllVolume() {
+    partStates.forEach((part) =>
+      part.track.volume(part.volume * props.masterVolume),
     );
   }
 
@@ -201,7 +222,7 @@ export default function Player(props: PlayerProps) {
     <>
       {!tracksLoaded.every((element) => element) && <Spinner />}
 
-      <div className="px-10 md:px-20 py-10 max-w-200 flex flex-col gap-2 md:gap-10 text-black dark:text-white">
+      <div className="px-10 md:px-20 py-10 max-w-300 flex flex-col gap-2 md:gap-10 text-black dark:text-white">
         {/* <Click beat={beat} /> */}
 
         <SongInfoCard songData={props.songData} />

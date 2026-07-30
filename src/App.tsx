@@ -27,9 +27,11 @@ export default function App() {
   const [metadata, setMetadata] = useState<Array<SongData>>([]);
   const [sidebarExp, setSidebarExp] = useState(false);
   const [dark, setDark] = useState(false);
+  const [masterVolume, setMasterVolume] = useState(1);
 
   useEffect(() => {
     setDark(localStorage.getItem("dark") == "true" ? true : false);
+    setMasterVolume(Number(localStorage.getItem("masterVolume")) || 100);
   }, []);
 
   useEffect(() => {
@@ -51,6 +53,12 @@ export default function App() {
     localStorage.setItem("dark", !dark ? "true" : "false");
   }
 
+  function changeMasterVolume(newVolume: number) {
+    console.log("changing volume to", newVolume);
+    setMasterVolume(newVolume);
+    localStorage.setItem("masterVolume", String(newVolume));
+  }
+
   return (
     <BrowserRouter>
       <div
@@ -59,7 +67,9 @@ export default function App() {
         <div className="sticky top-0">
           <Header
             dark={dark}
+            masterVolume={masterVolume}
             onToggleDark={handleToggleDark}
+            onChangeVolume={changeMasterVolume}
             onExpandToggle={() => {
               setSidebarExp(!sidebarExp);
             }}
@@ -82,7 +92,9 @@ export default function App() {
                 {metadata.map((data: SongData) => (
                   <Route
                     path={`definitelyshowready/${data.dirName}`}
-                    element={<Player songData={data} />}
+                    element={
+                      <Player songData={data} masterVolume={masterVolume} />
+                    }
                   />
                 ))}
               </Routes>
