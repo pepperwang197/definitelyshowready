@@ -54,7 +54,6 @@ export default function App() {
   }
 
   function changeMasterVolume(newVolume: number) {
-    console.log("changing volume to", newVolume);
     setMasterVolume(newVolume);
     localStorage.setItem("masterVolume", String(newVolume));
   }

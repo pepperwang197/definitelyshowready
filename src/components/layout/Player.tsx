@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Howl } from "howler";
+import { Howl, Howler } from "howler";
 
 import Transport from "../Transport";
 import PartSettings from "../PartSettings";
@@ -53,12 +53,19 @@ export default function Player(props: PlayerProps) {
             });
             console.log(props.songData.parts[index]);
           },
+          onplayerror: (soundId: number, error) => {
+            console.error(soundId, error);
+          },
         }),
         volume: 0.7,
         muted: false,
         soloed: false,
       })),
     );
+
+    return () => {
+      Howler.unload();
+    };
   }, [props.songData]);
 
   useEffect(() => {
