@@ -32,7 +32,9 @@ export default function Player(props: PlayerProps) {
   const [partStates, setPartStates] = useState<Array<PartState>>([]);
   const [partsSoloed, setPartsSoloed] = useState(0);
   const [secsPerBeat, setSecsPerBeat] = useState<number>();
-  const [clickMute, setClickMute] = useState(false);
+  const [clickMute, setClickMute] = useState(
+    localStorage.getItem("clickMute") == "false" ? false : true,
+  );
 
   const [click, setClick] = useState<Howl>();
 
@@ -52,6 +54,7 @@ export default function Player(props: PlayerProps) {
         onload: () => {
           console.log("click loaded");
         },
+        mute: clickMute,
       }),
     );
 
@@ -204,6 +207,7 @@ export default function Player(props: PlayerProps) {
   function toggleClickTrack() {
     setClickMute(!clickMute);
     click!.mute(!clickMute);
+    localStorage.setItem("clickMute", !clickMute ? "true" : "false");
   }
 
   function updateMute(name: string, mute: boolean) {
