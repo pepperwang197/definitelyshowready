@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Popover, Switch, Slider } from "radix-ui";
-import SettingsIcon from "@mui/icons-material/Settings";
+import { Slider } from "radix-ui";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
@@ -17,9 +16,6 @@ interface HeaderProps {
 }
 
 export default function Header(props: HeaderProps) {
-  const urlBase =
-    "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
-
   return (
     <div className="w-full px-8 py-4 border-b bg-white dark:bg-gray-900 border-slate-300 dark:border-gray-600 text-cyan-500 text-l font-black flex flex-row justify-between">
       <div className="flex flex-row items-center gap-6">
