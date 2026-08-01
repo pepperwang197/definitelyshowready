@@ -11,6 +11,7 @@ import SongInfoCard from "../SongInfoCard";
 interface PlayerProps {
   songData: SongData;
   masterVolume: number;
+  focused: boolean;
 }
 
 export interface PartState {
@@ -92,16 +93,19 @@ export default function Player(props: PlayerProps) {
 
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      if (!event.repeat) {
+      if (!props.focused && !event.repeat) {
         event.preventDefault();
         switch (event.key) {
           case " ":
+            event.preventDefault();
             playing ? handlePause() : handlePlay();
             break;
           case "ArrowLeft":
+            event.preventDefault();
             handleBack5();
             break;
           case "ArrowRight":
+            event.preventDefault();
             handleForward5();
             break;
         }

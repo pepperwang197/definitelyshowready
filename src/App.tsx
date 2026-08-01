@@ -3,6 +3,7 @@ import Player from "./components/layout/Player";
 import Homepage from "./components/layout/Homepage";
 import Sidebar from "./components/layout/Sidebar";
 import MyScrollArea from "./components/MyScrollArea";
+import Metronome from "./components/layout/Metronome";
 import { HashRouter, Routes, Route } from "react-router";
 import { useEffect, useState } from "react";
 
@@ -27,6 +28,8 @@ export default function App() {
   const [sidebarExp, setSidebarExp] = useState(false);
   const [dark, setDark] = useState(false);
   const [masterVolume, setMasterVolume] = useState(1);
+  const [metronomeEnabled, setMetronomeEnabled] = useState(false);
+  const [textBoxFocused, setTextBoxFocused] = useState(false);
 
   useEffect(() => {
     setDark(localStorage.getItem("dark") == "true" ? true : false);
@@ -66,7 +69,11 @@ export default function App() {
           <Header
             dark={dark}
             masterVolume={masterVolume}
+            metronome={metronomeEnabled}
             onToggleDark={handleToggleDark}
+            onToggleMetronome={() => {
+              setMetronomeEnabled(!metronomeEnabled);
+            }}
             onChangeVolume={changeMasterVolume}
             onExpandToggle={() => {
               setSidebarExp(!sidebarExp);
@@ -91,13 +98,28 @@ export default function App() {
                   <Route
                     path={`/${data.dirName}`}
                     element={
-                      <Player songData={data} masterVolume={masterVolume} />
+                      <Player
+                        songData={data}
+                        masterVolume={masterVolume}
+                        focused={textBoxFocused}
+                      />
                     }
                   />
                 ))}
               </Routes>
             </MyScrollArea>
           </div>
+
+          {metronomeEnabled && (
+            <Metronome
+              focus={() => {
+                setTextBoxFocused(true);
+              }}
+              blur={() => {
+                setTextBoxFocused(false);
+              }}
+            />
+          )}
         </div>
       </div>
     </HashRouter>
