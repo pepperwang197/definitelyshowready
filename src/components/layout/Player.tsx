@@ -3,7 +3,6 @@ import { Howl, Howler } from "howler";
 
 import Transport from "../Transport";
 import PartSettings from "../PartSettings";
-// import Click from "../Click";
 
 import type { SongData } from "../../App";
 import Spinner from "../Spinner";
@@ -30,16 +29,43 @@ export default function Player(props: PlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [beat, setBeat] = useState(0);
-  // const [masterVolume, setMasterVolume] = useState(100);
   const [partStates, setPartStates] = useState<Array<PartState>>([]);
   const [partsSoloed, setPartsSoloed] = useState(0);
+  const [secsPerBeat, setSecsPerBeat] = useState<number>();
+
+  const [click, setClick] = useState(
+    new Howl({
+      src: [`${import.meta.env.BASE_URL}/click.wav`],
+      onload: () => {
+        console.log("click loaded");
+      },
+      onloaderror: (_soundId, error) => {
+        console.error(error);
+      },
+    }),
+  );
 
   // API CALL
   useEffect(() => {
     setTracksLoaded(Array(props.songData.filenames.length).fill(false));
     handlePause();
+    handleMove(0);
 
     console.log("received metadata:", props.songData);
+
+    setSecsPerBeat(60 / props.songData.bpm);
+
+    setClick(
+      new Howl({
+        src: [`${import.meta.env.BASE_URL}/click.wav`],
+        onload: () => {
+          console.log("click loaded");
+        },
+        onloaderror: (_soundId, error) => {
+          console.error(error);
+        },
+      }),
+    );
 
     setPartStates(
       props.songData.filenames.map((filename: string, index: number) => ({
@@ -102,24 +128,28 @@ export default function Player(props: PlayerProps) {
   }, [playing, currentTime]);
 
   useEffect(() => {
-    // console.log("useeffect timeout being called");
-    const intervalId = setInterval(() => {
-      updateTime();
-    }, 50);
-    return () => clearTimeout(intervalId);
-  }, [props.songData, currentTime, playing]);
+    if (playing) {
+      const intervalId = setInterval(() => {
+        updateTime();
+      }, 50);
+      // console.log("set interval:", intervalId);
+      return () => {
+        clearTimeout(intervalId);
+        // console.log("cleared", intervalId);
+      };
+    }
+  }, [props.songData, currentTime, playing, beat]);
 
   function updateTime() {
     if (currentTime >= props.songData.duration) {
       handlePause();
     }
+
     if (playing) {
       const newTime = partStates[0].track.seek();
-      if (
-        (beat + 1) * props.songData.secsPerBeat + props.songData.offset <=
-        newTime
-      ) {
+      if ((beat + 1) * secsPerBeat! + props.songData.offset <= newTime) {
         setBeat(beat + 1);
+        click.play();
       }
       setCurrentTime(newTime);
     }
@@ -166,7 +196,7 @@ export default function Player(props: PlayerProps) {
     partStates.forEach((part) => {
       part.track.seek(timestamp);
     });
-    setBeat(timestamp / props.songData.secsPerBeat);
+    setBeat(Math.round(timestamp / secsPerBeat!));
   }
 
   function updateVolume(name: string, volume: number) {
@@ -230,8 +260,6 @@ export default function Player(props: PlayerProps) {
       {!tracksLoaded.every((element) => element) && <Spinner />}
 
       <div className="px-10 md:px-20 py-10 max-w-300 flex flex-col gap-2 md:gap-10 text-black dark:text-white">
-        {/* <Click beat={beat} /> */}
-
         <SongInfoCard songData={props.songData} />
 
         <Transport

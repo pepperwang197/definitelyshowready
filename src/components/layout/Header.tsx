@@ -28,7 +28,8 @@ export default function Header(props: HeaderProps) {
         </button>
         <Link to="/">
           <img
-            src={urlBase + "logo.png"}
+            // src={urlBase + "logo.png"}
+            src={`${import.meta.env.BASE_URL}/logo.png`}
             alt="DefinitelyShowReady"
             className="h-16"
           />
@@ -64,9 +65,9 @@ export default function Header(props: HeaderProps) {
         </Slider.Root>
         <button className="ml-6 cursor-pointer" onClick={props.onToggleDark}>
           {props.dark ? (
-            <LightModeIcon fontSize="large" />
-          ) : (
             <DarkModeIcon fontSize="large" />
+          ) : (
+            <LightModeIcon fontSize="large" />
           )}
         </button>
       </div>

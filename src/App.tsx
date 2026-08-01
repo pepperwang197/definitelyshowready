@@ -13,7 +13,6 @@ export interface SongData {
   timeSignature: string;
   bpmUnit: string;
   bpm: number;
-  secsPerBeat: number;
   offset: number;
   duration: number;
   parts: Array<string>;
