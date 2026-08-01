@@ -10,11 +10,13 @@ interface TransportProps {
   duration: number;
   currentTime: number;
   playing: boolean;
+  clickMute: boolean;
   play: () => void;
   pause: () => void;
   move: (timestamp: number) => void;
   forward5: () => void;
   back5: () => void;
+  toggleClick: () => void;
 }
 
 export default function Transport(props: TransportProps) {
@@ -45,6 +47,19 @@ export default function Transport(props: TransportProps) {
           )}
           <button className="cursor-pointer" onClick={props.forward5}>
             <Forward5Icon fontSize="large" />
+          </button>
+          <button className="cursor-pointer" onClick={props.toggleClick}>
+            {props.clickMute ? (
+              <img
+                className="min-w-6 mx-1 dark:invert"
+                src={`${import.meta.env.BASE_URL}/metronome.svg`}
+              />
+            ) : (
+              <img
+                className="min-w-6 mx-1"
+                src={`${import.meta.env.BASE_URL}/metronome_on.svg`}
+              />
+            )}
           </button>
         </div>
 

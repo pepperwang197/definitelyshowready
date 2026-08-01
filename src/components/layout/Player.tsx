@@ -32,18 +32,9 @@ export default function Player(props: PlayerProps) {
   const [partStates, setPartStates] = useState<Array<PartState>>([]);
   const [partsSoloed, setPartsSoloed] = useState(0);
   const [secsPerBeat, setSecsPerBeat] = useState<number>();
+  const [clickMute, setClickMute] = useState(false);
 
-  const [click, setClick] = useState(
-    new Howl({
-      src: [`${import.meta.env.BASE_URL}/click.wav`],
-      onload: () => {
-        console.log("click loaded");
-      },
-      onloaderror: (_soundId, error) => {
-        console.error(error);
-      },
-    }),
-  );
+  const [click, setClick] = useState<Howl>();
 
   // API CALL
   useEffect(() => {
@@ -61,9 +52,6 @@ export default function Player(props: PlayerProps) {
         onload: () => {
           console.log("click loaded");
         },
-        onloaderror: (_soundId, error) => {
-          console.error(error);
-        },
       }),
     );
 
@@ -78,9 +66,6 @@ export default function Player(props: PlayerProps) {
               return prev.map((element, i) => (i == index ? true : element));
             });
             console.log(props.songData.parts[index]);
-          },
-          onplayerror: (soundId: number, error) => {
-            console.error(soundId, error);
           },
         }),
         volume: 0.7,
@@ -149,7 +134,7 @@ export default function Player(props: PlayerProps) {
       const newTime = partStates[0].track.seek();
       if ((beat + 1) * secsPerBeat! + props.songData.offset <= newTime) {
         setBeat(beat + 1);
-        click.play();
+        click!.play();
       }
       setCurrentTime(newTime);
     }
@@ -216,6 +201,11 @@ export default function Player(props: PlayerProps) {
     );
   }
 
+  function toggleClickTrack() {
+    setClickMute(!clickMute);
+    click!.mute(!clickMute);
+  }
+
   function updateMute(name: string, mute: boolean) {
     setPartStates((prev: Array<PartState>) =>
       prev.map((part) => {
@@ -266,11 +256,13 @@ export default function Player(props: PlayerProps) {
           duration={props.songData.duration || 0}
           currentTime={currentTime}
           playing={playing}
+          clickMute={clickMute}
           play={handlePlay}
           pause={handlePause}
           move={handleMove}
           forward5={handleForward5}
           back5={handleBack5}
+          toggleClick={toggleClickTrack}
         />
         <PartSettings
           partStates={partStates}
