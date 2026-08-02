@@ -94,6 +94,7 @@ export default function App() {
             <MyScrollArea>
               <Routes>
                 <Route path="/" element={<Homepage />} />
+                <Route path="/metronome/" element={<Metronome />} />
                 {metadata.map((data: SongData) => (
                   <Route
                     path={`/${data.dirName}`}

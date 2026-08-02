@@ -4,8 +4,8 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
 interface MetronomeProps {
-  focus: () => void;
-  blur: () => void;
+  focus?: () => void;
+  blur?: () => void;
 }
 
 export default function Metronome(props: MetronomeProps) {
