@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Popover, Switch, Slider } from "radix-ui";
+import { Popover, Switch } from "radix-ui";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
@@ -8,6 +8,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import SettingsIcon from "@mui/icons-material/Settings";
 import MediaQuery from "react-responsive";
+import VolumeSlider from "../VolumeSlider";
 
 interface HeaderProps {
   dark: boolean;
@@ -61,25 +62,14 @@ export default function Header(props: HeaderProps) {
                   </Switch.Root>
                 </div>
 
-                <div className="flex flex-row items-center gap-6 justify-between">
+                <div className="flex flex-row items-center gap-6 mr-2 justify-between">
                   Volume
-                  <Slider.Root
-                    className="group relative flex items-center m-2 w-full md:max-w-100 h-2 md:pl-2"
-                    onValueChange={(value: number[]) => {
+                  <VolumeSlider
+                    value={props.masterVolume * 100}
+                    onChange={(value: number[]) => {
                       props.onChangeVolume(value[0] / 100);
                     }}
-                    value={[props.masterVolume * 100]}
-                    max={100}
-                    step={1}
-                  >
-                    <Slider.Track className="relative -translate-x-1 grow size-full overflow-hidden rounded-full bg-slate-300 dark:bg-gray-600">
-                      <Slider.Range className="absolute grow h-full bg-cyan-500" />
-                    </Slider.Track>
-                    <Slider.Thumb
-                      className="p-2 aspect-square rounded-sm bg-cyan-500 outline-0"
-                      aria-label="Master Volume"
-                    />
-                  </Slider.Root>
+                  />
                 </div>
               </Popover.Content>
             </Popover.Portal>
@@ -106,32 +96,24 @@ export default function Header(props: HeaderProps) {
             )}
           </button>
 
-          {(function () {
-            if (props.masterVolume == 0) {
-              return <VolumeOffIcon fontSize="large" />;
-            }
-            if (props.masterVolume < 0.5) {
-              return <VolumeDownIcon fontSize="large" />;
-            }
-            return <VolumeUpIcon fontSize="large" />;
-          })()}
-          <Slider.Root
-            className="group relative cursor-pointer flex items-center m-2 w-30 md:max-w-100 h-2"
-            onValueChange={(value: number[]) => {
-              props.onChangeVolume(value[0] / 100);
-            }}
-            value={[props.masterVolume * 100]}
-            max={100}
-            step={1}
-          >
-            <Slider.Track className="relative -translate-x-1 grow size-full overflow-hidden rounded-full bg-slate-300 dark:bg-gray-600">
-              <Slider.Range className="absolute grow h-full bg-cyan-500" />
-            </Slider.Track>
-            <Slider.Thumb
-              className="p-2 aspect-square rounded-sm bg-cyan-500 outline-0"
-              aria-label="Master Volume"
+          <div className="flex flex-row items-center w-40 mr-4">
+            {(function () {
+              if (props.masterVolume == 0) {
+                return <VolumeOffIcon fontSize="large" />;
+              }
+              if (props.masterVolume < 0.5) {
+                return <VolumeDownIcon fontSize="large" />;
+              }
+              return <VolumeUpIcon fontSize="large" />;
+            })()}
+            <VolumeSlider
+              value={props.masterVolume * 100}
+              onChange={(value: number[]) => {
+                props.onChangeVolume(value[0] / 100);
+              }}
             />
-          </Slider.Root>
+          </div>
+
           <button className="cursor-pointer" onClick={props.onToggleDark}>
             {props.dark ? (
               <DarkModeIcon fontSize="large" />
