@@ -10,7 +10,6 @@ import SongInfoCard from "../SongInfoCard";
 
 interface PlayerProps {
   songData: SongData;
-  masterVolume: number;
   focused: boolean;
 }
 
@@ -64,7 +63,7 @@ export default function Player(props: PlayerProps) {
         name: props.songData.parts[index],
         track: new Howl({
           src: urlBase + props.songData.dirName + filename,
-          volume: 0.7 * props.masterVolume,
+          volume: 0.7,
           onload: () => {
             setTracksLoaded((prev) => {
               return prev.map((element, i) => (i == index ? true : element));
@@ -86,10 +85,6 @@ export default function Player(props: PlayerProps) {
   useEffect(() => {
     handleMove(0);
   }, [tracksLoaded.every((element) => element)]);
-
-  useEffect(() => {
-    updateAllVolume();
-  }, [props.masterVolume]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
@@ -195,16 +190,10 @@ export default function Player(props: PlayerProps) {
     setPartStates((prev: Array<PartState>) =>
       prev.map((part) => {
         if (part.name === name) {
-          part.track.volume(volume * props.masterVolume);
+          part.track.volume(volume);
         }
         return part.name === name ? { ...part, volume: volume } : part;
       }),
-    );
-  }
-
-  function updateAllVolume() {
-    partStates.forEach((part) =>
-      part.track.volume(part.volume * props.masterVolume),
     );
   }
 

@@ -6,6 +6,7 @@ import MyScrollArea from "./components/MyScrollArea";
 import Metronome from "./components/layout/Metronome";
 import { HashRouter, Routes, Route } from "react-router";
 import { useEffect, useState } from "react";
+import PianoWindow from "./components/layout/PianoWindow";
 
 export interface SongData {
   displayName: string; // deez nuts
@@ -29,6 +30,7 @@ export default function App() {
   const [dark, setDark] = useState(false);
   const [masterVolume, setMasterVolume] = useState(1);
   const [metronomeEnabled, setMetronomeEnabled] = useState(false);
+  const [pianoEnabled, setPianoEnabled] = useState(false);
   const [textBoxFocused, setTextBoxFocused] = useState(false);
 
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function App() {
 
   function changeMasterVolume(newVolume: number) {
     setMasterVolume(newVolume);
+    Howler.volume(newVolume);
     localStorage.setItem("masterVolume", String(newVolume));
   }
 
@@ -70,9 +73,13 @@ export default function App() {
             dark={dark}
             masterVolume={masterVolume}
             metronome={metronomeEnabled}
+            piano={pianoEnabled}
             onToggleDark={handleToggleDark}
             onToggleMetronome={() => {
               setMetronomeEnabled(!metronomeEnabled);
+            }}
+            onTogglePiano={() => {
+              setPianoEnabled(!pianoEnabled);
             }}
             onChangeVolume={changeMasterVolume}
             onExpandToggle={() => {
@@ -95,15 +102,15 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/metronome/" element={<Metronome />} />
+                <Route
+                  path="/piano"
+                  element={<PianoWindow masterVolume={masterVolume} />}
+                />
                 {metadata.map((data: SongData) => (
                   <Route
                     path={`/${data.dirName}`}
                     element={
-                      <Player
-                        songData={data}
-                        masterVolume={masterVolume}
-                        focused={textBoxFocused}
-                      />
+                      <Player songData={data} focused={textBoxFocused} />
                     }
                   />
                 ))}
@@ -120,6 +127,12 @@ export default function App() {
                 setTextBoxFocused(false);
               }}
             />
+          )}
+
+          {pianoEnabled && (
+            <div className="grow fixed z-10 left-0 right-0 bottom-0">
+              <PianoWindow masterVolume={masterVolume} />
+            </div>
           )}
         </div>
       </div>

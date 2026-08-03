@@ -7,6 +7,7 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PianoIcon from "@mui/icons-material/Piano";
 import MediaQuery from "react-responsive";
 import VolumeSlider from "../VolumeSlider";
 
@@ -14,8 +15,10 @@ interface HeaderProps {
   dark: boolean;
   masterVolume: number;
   metronome: boolean;
+  piano: boolean;
   onToggleDark: () => void;
   onToggleMetronome: () => void;
+  onTogglePiano: () => void;
   onChangeVolume: (newVolume: number) => void;
   onExpandToggle: () => void;
 }
@@ -79,6 +82,12 @@ export default function Header(props: HeaderProps) {
 
       <MediaQuery minWidth={768}>
         <div className="flex flex-row items-center gap-2">
+          <button
+            className={`hidden md:block cursor-pointer ${props.piano ? "text-cyan-500" : "text-black dark:text-white"}`}
+            onClick={props.onTogglePiano}
+          >
+            <PianoIcon fontSize="large" />
+          </button>
           <button
             className="hidden md:block mx-4 cursor-pointer"
             onClick={props.onToggleMetronome}

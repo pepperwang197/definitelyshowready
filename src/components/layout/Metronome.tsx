@@ -94,7 +94,7 @@ export default function Metronome(props: MetronomeProps) {
         </button>
       </div>
       BPM
-      <div className="flex flex-row items-center max-w-60 mt-4 text-cyan-500">
+      <div className="flex flex-row items-center max-w-40 mt-4 text-cyan-500">
         {(function () {
           if (volume == 0) {
             return <VolumeOffIcon fontSize="large" />;

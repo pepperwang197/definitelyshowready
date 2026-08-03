@@ -14,11 +14,11 @@ export default function VolumeSlider(props: SliderProps) {
       max={100}
       step={1}
     >
-      <Slider.Track className="relative -translate-x-1 grow size-full overflow-hidden rounded-full bg-slate-300 dark:bg-gray-600">
+      <Slider.Track className="relative -translate-x-1 grow size-full overflow-hidden cursor-pointer rounded-full bg-slate-300 dark:bg-gray-600">
         <Slider.Range className="absolute grow h-full bg-cyan-500" />
       </Slider.Track>
       <Slider.Thumb
-        className="p-2 aspect-square rounded-sm bg-cyan-500 outline-0"
+        className="p-2 aspect-square cursor-pointer rounded-sm bg-cyan-500 outline-0"
         aria-label="Volume"
       />
     </Slider.Root>

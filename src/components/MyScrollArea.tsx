@@ -7,7 +7,9 @@ interface ScrollAreaProps {
 export default function MyScrollArea(props: ScrollAreaProps) {
   return (
     <ScrollArea.Root className="overflow-hidden size-full relative flex flex-col">
-      <ScrollArea.Viewport>{props.children}</ScrollArea.Viewport>
+      <ScrollArea.Viewport className="size-full">
+        {props.children}
+      </ScrollArea.Viewport>
 
       <ScrollArea.Scrollbar
         orientation="vertical"
