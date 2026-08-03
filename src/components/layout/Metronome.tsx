@@ -70,6 +70,7 @@ export default function Metronome(props: MetronomeProps) {
           <input
             className="focus:outline-none text-2xl font-bold"
             type="number"
+            inputMode="numeric"
             min="40"
             max="218"
             value={bpm}
