@@ -24,7 +24,7 @@ export default function Metronome(props: MetronomeProps) {
     if (click === undefined || click?.state() == "unloaded") {
       setClick(
         new Howl({
-          src: [`${import.meta.env.BASE_URL}/click.wav`],
+          src: [`${import.meta.env.BASE_URL}/click.m4a`],
           onload: () => {
             console.log("click loaded");
           },

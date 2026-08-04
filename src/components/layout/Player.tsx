@@ -50,7 +50,7 @@ export default function Player(props: PlayerProps) {
 
     setClick(
       new Howl({
-        src: [`${import.meta.env.BASE_URL}/click.wav`],
+        src: [`${import.meta.env.BASE_URL}/click.m4a`],
         onload: () => {
           console.log("click loaded");
         },
