@@ -37,7 +37,9 @@ export default function SongInfoCard(props: SongInfoProps) {
   ]);
 
   const timeSigSplit = props.songData.timeSignature.split("/");
-  const keySigSplit = props.songData.keySignature.split(" ");
+  const keySigSplit = props.songData.keySignature
+    ? props.songData.keySignature.split(" ")
+    : [];
 
   const [infoHidden, setInfoHidden] = useState(true);
 
@@ -58,18 +60,22 @@ export default function SongInfoCard(props: SongInfoProps) {
       <div
         className={`${infoHidden ? "hidden" : "flex"} md:flex flex-row items-center gap-12 md:text-xl`}
       >
-        {keySigSplit.length >= 3 ? (
-          <div className="flex flex-row">
-            <p className="translate-x-1">{keySigSplit[0]}</p>
-            <img
-              src={notationSvgs.get(keySigSplit[1])}
-              className="h-6 dark:invert"
-            />
-            <p>{keySigSplit[2]}</p>
-          </div>
-        ) : (
-          <p>{props.songData.keySignature}</p>
-        )}
+        {(function () {
+          if (keySigSplit.length >= 3) {
+            return (
+              <div className="flex flex-row">
+                <p className="translate-x-1">{keySigSplit[0]}</p>
+                <img
+                  src={notationSvgs.get(keySigSplit[1])}
+                  className="h-6 dark:invert"
+                />
+                <p>{keySigSplit[2]}</p>
+              </div>
+            );
+          } else if (keySigSplit.length > 0) {
+            return <p>{props.songData.keySignature}</p>;
+          }
+        })()}
 
         <div className="flex flex-col items-center">
           <p className="translate-y-1">{timeSigSplit[0]}</p>
