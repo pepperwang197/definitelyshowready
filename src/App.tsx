@@ -6,6 +6,7 @@ import MyScrollArea from "./components/MyScrollArea";
 import Metronome from "./components/layout/Metronome";
 import { HashRouter, Routes, Route } from "react-router";
 import { useEffect, useState } from "react";
+import { Howler } from "howler";
 import PianoWindow from "./components/layout/PianoWindow";
 
 export interface SongData {
@@ -35,7 +36,10 @@ export default function App() {
 
   useEffect(() => {
     setDark(localStorage.getItem("dark") == "true" ? true : false);
-    setMasterVolume(Number(localStorage.getItem("masterVolume")) || 100);
+    const initialMasterVolume =
+      Number(localStorage.getItem("masterVolume")) || 100;
+    setMasterVolume(initialMasterVolume);
+    Howler.volume(initialMasterVolume);
   }, []);
 
   useEffect(() => {
