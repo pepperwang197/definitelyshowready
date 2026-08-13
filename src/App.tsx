@@ -27,7 +27,7 @@ export default function App() {
     "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
 
   const [metadata, setMetadata] = useState<Array<SongData>>([]);
-  const [sidebarExp, setSidebarExp] = useState(true);
+  const [sidebarExp, setSidebarExp] = useState(window.innerWidth > 768);
   const [dark, setDark] = useState(false);
   const [masterVolume, setMasterVolume] = useState(1);
   const [metronomeEnabled, setMetronomeEnabled] = useState(false);
