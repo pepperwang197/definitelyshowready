@@ -27,7 +27,7 @@ export default function App() {
     "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
 
   const [metadata, setMetadata] = useState<Array<SongData>>([]);
-  const [sidebarExp, setSidebarExp] = useState(false);
+  const [sidebarExp, setSidebarExp] = useState(true);
   const [dark, setDark] = useState(false);
   const [masterVolume, setMasterVolume] = useState(1);
   const [metronomeEnabled, setMetronomeEnabled] = useState(false);
@@ -37,7 +37,7 @@ export default function App() {
   useEffect(() => {
     setDark(localStorage.getItem("dark") == "true" ? true : false);
     const initialMasterVolume =
-      Number(localStorage.getItem("masterVolume")) || 100;
+      Number(localStorage.getItem("masterVolume")) || 1;
     setMasterVolume(initialMasterVolume);
     Howler.volume(initialMasterVolume);
   }, []);

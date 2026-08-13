@@ -21,7 +21,7 @@ export default function PianoWindow(props: PianoProps) {
   }, []);
 
   return (
-    <div className="size-full bg-white dark:bg-gray-900 md:border-t border-slate-300 dark:border-gray-600 text-black dark:text-white">
+    <div className="size-full select-none bg-white dark:bg-gray-900 md:border-t border-slate-300 dark:border-gray-600 text-black dark:text-white">
       <div
         className="size-full py-4 px-8"
         onMouseDown={(event) => event.preventDefault()}

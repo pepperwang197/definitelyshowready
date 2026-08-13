@@ -25,7 +25,7 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
   return (
-    <div className="w-full px-8 py-4 border-b bg-white dark:bg-gray-900 border-slate-300 dark:border-gray-600 text-cyan-500 text-l font-black flex flex-row justify-between">
+    <div className="select-none w-full px-8 py-4 border-b bg-white dark:bg-gray-900 border-slate-300 dark:border-gray-600 text-cyan-500 text-l font-black flex flex-row justify-between">
       <div className="flex flex-row items-center gap-6">
         <button className="cursor-pointer" onClick={props.onExpandToggle}>
           <MenuIcon fontSize="large" />
