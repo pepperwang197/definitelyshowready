@@ -7,6 +7,7 @@ import PartSettings from "../PartSettings";
 import type { SongData } from "../../App";
 import Spinner from "../Spinner";
 import SongInfoCard from "../SongInfoCard";
+import ToggleButton from "../ToggleButton";
 
 interface PlayerProps {
   songData: SongData;
@@ -19,6 +20,7 @@ export interface PartState {
   volume: number;
   muted: boolean;
   soloed: boolean;
+  selected: boolean;
 }
 
 export default function Player(props: PlayerProps) {
@@ -35,8 +37,8 @@ export default function Player(props: PlayerProps) {
   const [clickMute, setClickMute] = useState(
     localStorage.getItem("clickMute") == "false" ? false : true,
   );
-
   const [click, setClick] = useState<Howl>();
+  const [selecting, setSelecting] = useState(false);
 
   // API CALL
   useEffect(() => {
@@ -51,9 +53,6 @@ export default function Player(props: PlayerProps) {
     setClick(
       new Howl({
         src: [`${import.meta.env.BASE_URL}/click.m4a`],
-        onload: () => {
-          console.log("click loaded");
-        },
         mute: clickMute,
       }),
     );
@@ -68,12 +67,12 @@ export default function Player(props: PlayerProps) {
             setTracksLoaded((prev) => {
               return prev.map((element, i) => (i == index ? true : element));
             });
-            console.log(props.songData.parts[index]);
           },
         }),
         volume: 0.7,
         muted: false,
         soloed: false,
+        selected: false,
       })),
     );
 
@@ -119,10 +118,8 @@ export default function Player(props: PlayerProps) {
       const intervalId = setInterval(() => {
         updateTime();
       }, 50);
-      // console.log("set interval:", intervalId);
       return () => {
         clearTimeout(intervalId);
-        // console.log("cleared", intervalId);
       };
     }
   }, [props.songData, currentTime, playing, beat]);
@@ -186,30 +183,34 @@ export default function Player(props: PlayerProps) {
     setBeat(Math.round(timestamp / secsPerBeat!));
   }
 
-  function updateVolume(name: string, volume: number) {
-    setPartStates((prev: Array<PartState>) =>
-      prev.map((part) => {
-        if (part.name === name) {
-          part.track.volume(volume);
-        }
-        return part.name === name ? { ...part, volume: volume } : part;
-      }),
-    );
-  }
-
   function toggleClickTrack() {
     setClickMute(!clickMute);
     click!.mute(!clickMute);
     localStorage.setItem("clickMute", !clickMute ? "true" : "false");
   }
 
+  function updateVolume(name: string, volume: number) {
+    setPartStates((prev: Array<PartState>) =>
+      prev.map((part) => {
+        if (part.name === name || (selecting && part.selected)) {
+          part.track.volume(volume);
+        }
+        return part.name === name || (selecting && part.selected)
+          ? { ...part, volume: volume }
+          : part;
+      }),
+    );
+  }
+
   function updateMute(name: string, mute: boolean) {
     setPartStates((prev: Array<PartState>) =>
       prev.map((part) => {
-        if (part.name === name) {
+        if (part.name === name || (selecting && part.selected)) {
           part.track.mute(mute);
         }
-        return part.name === name ? { ...part, muted: mute } : part;
+        return part.name === name || (selecting && part.selected)
+          ? { ...part, muted: mute }
+          : part;
       }),
     );
   }
@@ -217,14 +218,30 @@ export default function Player(props: PlayerProps) {
   function updateSolo(name: string, solo: boolean) {
     let updatedPartsSoloed = partsSoloed;
 
-    if (solo) {
-      updatedPartsSoloed++;
+    if (selecting) {
+      let partsChanged = 0;
+      partStates.forEach((part) => {
+        if ((part.selected || part.name == name) && part.soloed != solo) {
+          partsChanged++;
+        }
+      });
+      if (solo) {
+        updatedPartsSoloed += partsChanged;
+      } else {
+        updatedPartsSoloed -= partsChanged;
+      }
     } else {
-      updatedPartsSoloed--;
+      if (solo) {
+        updatedPartsSoloed++;
+      } else {
+        updatedPartsSoloed--;
+      }
     }
 
-    let updatedStates = partStates.map((part) =>
-      part.name === name ? { ...part, soloed: solo } : part,
+    const updatedStates = partStates.map((part) =>
+      part.name === name || (selecting && part.selected)
+        ? { ...part, soloed: solo }
+        : part,
     );
 
     partStates.forEach((part, index) => {
@@ -242,11 +259,37 @@ export default function Player(props: PlayerProps) {
     setPartStates(updatedStates);
   }
 
+  function updateSelection(name: string, selected: boolean) {
+    setPartStates((prev: Array<PartState>) =>
+      prev.map((part) => {
+        return part.name === name ? { ...part, selected: selected } : part;
+      }),
+    );
+  }
+
+  function selectAll() {
+    setSelecting(true);
+    setPartStates((prev: Array<PartState>) =>
+      prev.map((part) => {
+        return { ...part, selected: true };
+      }),
+    );
+  }
+
+  function deselectAll() {
+    setSelecting(true);
+    setPartStates((prev: Array<PartState>) =>
+      prev.map((part) => {
+        return { ...part, selected: false };
+      }),
+    );
+  }
+
   return (
     <>
       {!tracksLoaded.every((element) => element) && <Spinner />}
 
-      <div className="px-10 md:px-20 py-10 max-w-300 flex flex-col gap-2 md:gap-10 text-black dark:text-white">
+      <div className="px-10 md:px-20 py-10 max-w-300 flex flex-col gap-2 md:gap-8 text-black dark:text-white">
         <SongInfoCard songData={props.songData} />
 
         <Transport
@@ -261,12 +304,42 @@ export default function Player(props: PlayerProps) {
           back5={handleBack5}
           toggleClick={toggleClickTrack}
         />
+
         <PartSettings
           partStates={partStates}
           updateVolume={updateVolume}
           updateMute={updateMute}
           updateSolo={updateSolo}
+          updateSelection={updateSelection}
+          selecting={selecting}
         />
+        <div className="mt-4 md:mt-0 flex flex-row gap-4">
+          <ToggleButton
+            value={selecting}
+            handleClick={() => {
+              setSelecting(!selecting);
+            }}
+            square={false}
+          >
+            Select
+          </ToggleButton>
+          {selecting && (
+            <button
+              onClick={selectAll}
+              className="p-2 px-4 cursor-pointer font-semibold rounded-sm bg-slate-300 dark:bg-gray-600 hover:bg-slate-400 dark:hover:bg-gray-700"
+            >
+              Select All
+            </button>
+          )}
+          {partStates.some((part) => part.selected) && selecting && (
+            <button
+              onClick={deselectAll}
+              className="p-2 px-4 cursor-pointer font-semibold rounded-sm bg-slate-300 dark:bg-gray-600 hover:bg-slate-400 dark:hover:bg-gray-700"
+            >
+              Deselect All
+            </button>
+          )}
+        </div>
       </div>
     </>
   );

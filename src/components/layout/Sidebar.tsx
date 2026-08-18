@@ -8,7 +8,7 @@ interface SidebarProps {
 
 export default function Sidebar(props: SidebarProps) {
   return (
-    <div className="min-w-60 h-full flex flex-col bg-white dark:bg-gray-900 text-black dark:text-white">
+    <div className="min-w-60 max-w-60 lg:max-w-70 h-full flex flex-col bg-white dark:bg-gray-900 text-black dark:text-white">
       <Link
         to="/piano/"
         className="md:hidden flex flex-row items-center gap-4 p-4 hover:bg-slate-100 dark:hover:bg-gray-800 border-b border-slate-300 dark:border-gray-600"

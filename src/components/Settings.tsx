@@ -11,14 +11,15 @@ interface SettingsProps {
 
 export default function Settings(props: SettingsProps) {
   return (
-    <div className="flex flex-col gap-2 md:flex-row md:gap-4 md:items-center">
-      <p className="md:w-30">{props.state.name}</p>
+    <div className="w-full flex flex-col gap-2 md:flex-row md:gap-4 md:items-center">
+      <p className="md:w-30 lg:w-40">{props.state.name}</p>
       <div className="w-full flex flex-row items-center gap-4">
         <ToggleButton
           value={props.state.muted}
           handleClick={() =>
             props.updateMute(props.state.name, !props.state.muted)
           }
+          square={true}
         >
           M
         </ToggleButton>
@@ -27,6 +28,7 @@ export default function Settings(props: SettingsProps) {
           handleClick={() =>
             props.updateSolo(props.state.name, !props.state.soloed)
           }
+          square={true}
         >
           S
         </ToggleButton>

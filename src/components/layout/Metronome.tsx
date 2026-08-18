@@ -25,9 +25,6 @@ export default function Metronome(props: MetronomeProps) {
       setClick(
         new Howl({
           src: [`${import.meta.env.BASE_URL}/click.m4a`],
-          onload: () => {
-            console.log("click loaded");
-          },
           volume: volume,
         }),
       );
