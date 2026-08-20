@@ -1,5 +1,6 @@
 import { Piano, MidiNumbers } from "react-piano";
 import { Soundfont } from "smplr";
+import { WebMidi } from "webmidi";
 import "react-piano/dist/styles.css";
 import { useEffect, useState } from "react";
 import VolumeSlider from "../VolumeSlider";
@@ -19,6 +20,35 @@ export default function PianoWindow(props: PianoProps) {
   useEffect(() => {
     setInstrument(Soundfont(context, { instrument: "acoustic_grand_piano" }));
   }, []);
+
+  useEffect(() => {
+    WebMidi.enable()
+      .then(onEnableMidi)
+      .catch((err) => alert(err));
+
+    return () => {
+      WebMidi.inputs.forEach((input) => {
+        input.channels.forEach((channel) => {
+          channel.removeListener();
+        });
+      });
+    };
+  }, [instrument]);
+
+  function onEnableMidi() {
+    WebMidi.inputs.forEach((input) => {
+      input.addListener("noteon", (e) => {
+        console.log(e);
+        instrument?.start({
+          note: e.note.number,
+          velocity: volume * 127 * e.velocity * props.masterVolume,
+        });
+      });
+      input.addListener("noteoff", (e) => {
+        instrument?.stop(e.note.number);
+      });
+    });
+  }
 
   return (
     <div className="size-full select-none bg-white dark:bg-gray-900 md:border-t border-slate-300 dark:border-gray-600 text-black dark:text-white">
