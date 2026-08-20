@@ -37,7 +37,7 @@ export default function PianoWindow(props: PianoProps) {
 
   function onEnableMidi() {
     WebMidi.inputs.forEach((input) => {
-      input.addListener("noteon", (e) => {
+      input.addListener("noteon", (e: any) => {
         console.log(e);
         instrument?.start({
           note: e.note.number,
