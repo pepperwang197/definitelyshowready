@@ -95,14 +95,14 @@ export default function App() {
         <div className="grow flex flex-row overflow-hidden ">
           {sidebarExp && (
             <div className="flex h-full min-w-60 border-r border-slate-300 dark:border-gray-600">
-              <MyScrollArea dark={dark}>
+              <MyScrollArea>
                 <Sidebar metadata={metadata || []} />
               </MyScrollArea>
             </div>
           )}
 
           <div className="grow">
-            <MyScrollArea dark={dark}>
+            <MyScrollArea>
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/metronome/" element={<Metronome />} />
