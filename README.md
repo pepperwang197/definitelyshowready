@@ -4,7 +4,7 @@
 
 ### a really cool music rehearsal software!
 
-### [demo :)](pepperwang197.github.io/definitelyshowready)
+### [demo :)](https://pepperwang197.github.io/definitelyshowready/)
 
 <br/>
 includes:
