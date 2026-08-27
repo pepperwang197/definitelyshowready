@@ -26,6 +26,7 @@ export default function App() {
   const urlBase =
     "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
 
+  const [homepageData, setHomepageData] = useState<any>();
   const [metadata, setMetadata] = useState<Array<SongData>>([]);
   const [sidebarExp, setSidebarExp] = useState(window.innerWidth > 768);
   const [dark, setDark] = useState(false);
@@ -51,6 +52,7 @@ export default function App() {
         return response.json(); // Parse the JSON data
       })
       .then((data) => {
+        setHomepageData(data.homepageinfo);
         setMetadata(data.songs);
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -104,7 +106,7 @@ export default function App() {
           <div className="grow">
             <MyScrollArea>
               <Routes>
-                <Route path="/" element={<Homepage />} />
+                <Route path="/" element={<Homepage info={homepageData} />} />
                 <Route path="/metronome/" element={<Metronome />} />
                 <Route
                   path="/piano"
