@@ -24,8 +24,7 @@ export interface PartState {
 }
 
 export default function Player(props: PlayerProps) {
-  const urlBase =
-    "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
+  const urlBase = "https://videos.cupcake.moe/fwop/AliceByHeart/";
 
   const [tracksLoaded, setTracksLoaded] = useState<Array<boolean>>([]);
   const [playing, setPlaying] = useState(false);

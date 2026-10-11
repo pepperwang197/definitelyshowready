@@ -23,8 +23,7 @@ export interface SongData {
 }
 
 export default function App() {
-  const urlBase =
-    "https://lytjllxvgnwrudwqfrpo.supabase.co/storage/v1/object/public/alicebyheart/";
+  const urlBase = "https://videos.cupcake.moe/fwop/AliceByHeart/";
 
   const [homepageData, setHomepageData] = useState<any>();
   const [metadata, setMetadata] = useState<Array<SongData>>([]);
